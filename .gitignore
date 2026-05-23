@@ -141,3 +141,26 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+
+# dependencies
+node_modules
+
+# production
+dist
+build
+
+# environment variables
+.env
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# editor files
+.vscode
+.idea
+
+# system files
+.DS_Store
