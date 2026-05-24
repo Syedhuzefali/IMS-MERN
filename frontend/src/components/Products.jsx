@@ -150,7 +150,7 @@ export default function Products() {
                   <tr key={product._id} className="border-t hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-4 py-3 dark:text-gray-300">{index + 1}</td>
                     <td className="px-4 py-3 dark:text-gray-300">{product.ProductName}</td>
-                    <td className="px-4 py-3 dark:text-gray-300">${product.ProductPrice}</td>
+                    <td className="px-4 py-3 dark:text-gray-300">₹{product.ProductPrice}</td>
                     <td className="px-4 py-3 dark:text-gray-300">{product.ProductBarcode}</td>
                     <td className="px-4 py-3 flex gap-2">
                       <NavLink

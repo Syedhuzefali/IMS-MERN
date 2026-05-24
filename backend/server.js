@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const connectToMongo = require("./config/db");
 connectToMongo();
 
@@ -6,24 +8,62 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors());
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Debug middleware to log incoming requests
+// ===============================
+// Middleware
+// ===============================
+app.use(cors());
+
+app.use(express.json({
+  limit: "50mb"
+}));
+
+app.use(express.urlencoded({
+  limit: "50mb",
+  extended: true
+}));
+
+
+// ===============================
+// Debug Middleware
+// ===============================
 app.use((req, res, next) => {
-  console.log("Incoming Request:", { method: req.method, path: req.path, body: req.body });
+
+  console.log("Incoming Request:", {
+    method: req.method,
+    path: req.path
+  });
+
   next();
+
 });
 
+
+// ===============================
+// Routes
+// ===============================
 const productRoutes = require("./Routes/router");
 
-app.use("/api/products", productRoutes);
+app.use('/api/products', productRoutes);
 
+
+// ===============================
+// Default Route
+// ===============================
 app.get("/", (req, res) => {
+
   res.send("Backend Running");
+
 });
 
-app.listen(3001, () => {
-  console.log("Server Running on Port 3001");
+
+// ===============================
+// Server Start
+// ===============================
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+
+  console.log(`Server Running on Port ${PORT}`);
+
 });

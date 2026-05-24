@@ -2,103 +2,202 @@ const express = require('express');
 const router = express.Router();
 const products = require('../Models/Products');
 
-//Inserting(Creating) Data:
-router.post("/insertproduct", async (req, res) => {
+
+// ===============================
+// Insert Product
+// ===============================
+router.post('/insertproduct', async (req, res) => {
+
     const { ProductName, ProductPrice, ProductBarcode } = req.body;
 
     try {
-        const pre = await products.findOne({ ProductBarcode: ProductBarcode })
-        console.log(pre);
+
+        const pre = await products.findOne({
+            ProductBarcode: ProductBarcode
+        });
 
         if (pre) {
-            res.status(422).json("Product is already added.")
-        }
-        else {
-            const addProduct = new products({ ProductName, ProductPrice, ProductBarcode })
 
-            await addProduct.save();
-            res.status(201).json(addProduct)
-            console.log(addProduct)
-        }
-    }
-    catch (err) {
-        console.log(err)
-    }
-})
+            return res.status(422).json({
+                message: "Product already exists"
+            });
 
-//Getting(Reading) Data:
-router.get('/products', async (req, res) => {
+        }
+
+        const addProduct = new products({
+            ProductName,
+            ProductPrice,
+            ProductBarcode
+        });
+
+        await addProduct.save();
+
+        console.log(addProduct);
+
+        res.status(201).json(addProduct);
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+            message: err.message
+        });
+
+    }
+
+});
+
+
+// ===============================
+// Get All Products
+// ===============================
+router.get('/', async (req, res) => {
 
     try {
-        const getProducts = await products.find({})
+
+        const getProducts = await products.find({});
+
         console.log(getProducts);
-        res.status(201).json(getProducts);
-    }
-    catch (err) {
-        console.log(err);
-    }
-})
 
-//Getting(Reading) individual Data:
-router.get('/products/:id', async (req, res) => {
+        res.status(200).json(getProducts);
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+            message: err.message
+        });
+
+    }
+
+});
+
+
+// ===============================
+// Get Single Product
+// ===============================
+router.get('/:id', async (req, res) => {
 
     try {
+
         const getProduct = await products.findById(req.params.id);
-        console.log(getProduct);
-        res.status(201).json(getProduct);
-    }
-    catch (err) {
+
+        if (!getProduct) {
+
+            return res.status(404).json({
+                message: "Product not found"
+            });
+
+        }
+
+        res.status(200).json(getProduct);
+
+    } catch (err) {
+
         console.log(err);
+
+        res.status(500).json({
+            message: err.message
+        });
+
     }
-})
-//Editing(Updating) Data:
-router.put('/products/updateproduct/:id', async (req, res) => {
+
+});
+
+
+// ===============================
+// Update Product (PUT)
+// ===============================
+router.put('/updateproduct/:id', async (req, res) => {
+
     const { ProductName, ProductPrice, ProductBarcode } = req.body;
 
     try {
-        const updateProducts = await products.findByIdAndUpdate(req.params.id, { ProductName, ProductPrice, ProductBarcode }, { new: true });
-        console.log("Data Updated");
-        res.status(201).json(updateProducts);
-    }
-    catch (err) {
-        console.log(err);
-    }
-})
 
-//Deleting Data:
-router.delete('/products/deleteproduct/:id', async (req, res) => {
+        const updateProducts = await products.findByIdAndUpdate(
+            req.params.id,
+            {
+                ProductName,
+                ProductPrice,
+                ProductBarcode
+            },
+            {
+                new: true
+            }
+        );
+
+        console.log("Data Updated");
+
+        res.status(200).json(updateProducts);
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+            message: err.message
+        });
+
+    }
+
+});
+
+
+// ===============================
+// Delete Product
+// ===============================
+router.delete('/deleteproduct/:id', async (req, res) => {
 
     try {
+
         const deleteProduct = await products.findByIdAndDelete(req.params.id);
+
         console.log("Data Deleted");
-        res.status(201).json(deleteProduct);
-    }
-    catch (err) {
+
+        res.status(200).json(deleteProduct);
+
+    } catch (err) {
+
         console.log(err);
+
+        res.status(500).json({
+            message: err.message
+        });
+
     }
-})
 
-//Patching Data:
-router.patch("/products/patchproduct/:id", async (req, res) => {
+});
 
-  try {
 
-    const updateProduct = await products.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+// ===============================
+// Patch Product
+// ===============================
+router.patch('/patchproduct/:id', async (req, res) => {
 
-    res.status(200).json(updateProduct);
+    try {
 
-  } catch (error) {
+        const updateProduct = await products.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true
+            }
+        );
 
-    console.log(error);
+        res.status(200).json(updateProduct);
 
-    res.status(500).json({
-      message: error.message,
-    });
-  }
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+
 });
 
 
