@@ -16,7 +16,7 @@ export default function Products() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(buildApiUrl("/api/products/products"), {
+      const res = await fetch(buildApiUrl("/api/products"), {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export default function Products() {
 
     try {
       const response = await fetch(
-        buildApiUrl(`/api/products/products/deleteproduct/${id}`),
+        buildApiUrl(`/api/products/deleteproduct/${id}`),
         {
           method: "DELETE",
           headers: {

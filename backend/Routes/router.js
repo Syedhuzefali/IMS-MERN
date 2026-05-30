@@ -3,25 +3,19 @@ const router = express.Router();
 const products = require('../Models/Products');
 
 
-// ===============================
-// Insert Product
-// ===============================
-router.post('/insertproduct', async (req, res) => {
+// ================= INSERT PRODUCT =================
+router.post("/insertproduct", async (req, res) => {
 
     const { ProductName, ProductPrice, ProductBarcode } = req.body;
 
     try {
 
-        const pre = await products.findOne({
-            ProductBarcode: ProductBarcode
-        });
+        const pre = await products.findOne({ ProductBarcode });
 
         if (pre) {
-
             return res.status(422).json({
                 message: "Product already exists"
             });
-
         }
 
         const addProduct = new products({
@@ -32,8 +26,6 @@ router.post('/insertproduct', async (req, res) => {
 
         await addProduct.save();
 
-        console.log(addProduct);
-
         res.status(201).json(addProduct);
 
     } catch (err) {
@@ -43,22 +35,16 @@ router.post('/insertproduct', async (req, res) => {
         res.status(500).json({
             message: err.message
         });
-
     }
-
 });
 
 
-// ===============================
-// Get All Products
-// ===============================
+// ================= GET ALL PRODUCTS =================
 router.get('/', async (req, res) => {
 
     try {
 
         const getProducts = await products.find({});
-
-        console.log(getProducts);
 
         res.status(200).json(getProducts);
 
@@ -69,28 +55,16 @@ router.get('/', async (req, res) => {
         res.status(500).json({
             message: err.message
         });
-
     }
-
 });
 
 
-// ===============================
-// Get Single Product
-// ===============================
+// ================= GET SINGLE PRODUCT =================
 router.get('/:id', async (req, res) => {
 
     try {
 
         const getProduct = await products.findById(req.params.id);
-
-        if (!getProduct) {
-
-            return res.status(404).json({
-                message: "Product not found"
-            });
-
-        }
 
         res.status(200).json(getProduct);
 
@@ -101,15 +75,11 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({
             message: err.message
         });
-
     }
-
 });
 
 
-// ===============================
-// Update Product (PUT)
-// ===============================
+// ================= UPDATE PRODUCT =================
 router.put('/updateproduct/:id', async (req, res) => {
 
     const { ProductName, ProductPrice, ProductBarcode } = req.body;
@@ -123,12 +93,8 @@ router.put('/updateproduct/:id', async (req, res) => {
                 ProductPrice,
                 ProductBarcode
             },
-            {
-                new: true
-            }
+            { new: true }
         );
-
-        console.log("Data Updated");
 
         res.status(200).json(updateProducts);
 
@@ -139,22 +105,16 @@ router.put('/updateproduct/:id', async (req, res) => {
         res.status(500).json({
             message: err.message
         });
-
     }
-
 });
 
 
-// ===============================
-// Delete Product
-// ===============================
+// ================= DELETE PRODUCT =================
 router.delete('/deleteproduct/:id', async (req, res) => {
 
     try {
 
         const deleteProduct = await products.findByIdAndDelete(req.params.id);
-
-        console.log("Data Deleted");
 
         res.status(200).json(deleteProduct);
 
@@ -165,15 +125,11 @@ router.delete('/deleteproduct/:id', async (req, res) => {
         res.status(500).json({
             message: err.message
         });
-
     }
-
 });
 
 
-// ===============================
-// Patch Product
-// ===============================
+// ================= PATCH PRODUCT =================
 router.patch('/patchproduct/:id', async (req, res) => {
 
     try {
@@ -181,9 +137,7 @@ router.patch('/patchproduct/:id', async (req, res) => {
         const updateProduct = await products.findByIdAndUpdate(
             req.params.id,
             req.body,
-            {
-                new: true
-            }
+            { new: true }
         );
 
         res.status(200).json(updateProduct);
@@ -195,10 +149,7 @@ router.patch('/patchproduct/:id', async (req, res) => {
         res.status(500).json({
             message: error.message
         });
-
     }
-
 });
-
 
 module.exports = router;

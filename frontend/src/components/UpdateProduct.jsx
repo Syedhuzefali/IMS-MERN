@@ -16,7 +16,7 @@ export default function UpdateProduct() {
     const getProduct = async () => {
       setLoading(true);
       try {
-        const res = await fetch(buildApiUrl(`/api/products/products/${id}`), {
+        const res = await fetch(buildApiUrl(`/api/products/${id}`), {
           method: "GET",
           headers: {
             "Content-Type": "application/json"
@@ -65,7 +65,7 @@ export default function UpdateProduct() {
 
     try {
       const response = await fetch(
-        buildApiUrl(`/api/products/products/updateproduct/${id}`),
+        buildApiUrl(`/api/products/updateproduct/${id}`),
         {
           method: "PUT",
           headers: {
