@@ -42,9 +42,8 @@ app.use((req, res, next) => {
 // ===============================
 // Routes
 // ===============================
-const productRoutes = require("./Routes/router");
-
-app.use('/api/products', require('./Routes/router'));
+app.use('/api/auth', require('./Routes/auth'));        // Add authentication routes
+app.use('/api/products', require('./Routes/router'));  // Existing product routes
 
 
 // ===============================

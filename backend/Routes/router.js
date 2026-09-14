@@ -1,27 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const products = require('../Models/Products');
+const authMiddleware = require('../middleware/auth');  // Import auth middleware
 
 
 // ================= INSERT PRODUCT =================
-router.post("/insertproduct", async (req, res) => {
+router.post("/insertproduct", authMiddleware, async (req, res) => {
 
     const { ProductName, ProductPrice, ProductBarcode } = req.body;
 
     try {
 
-        const pre = await products.findOne({ ProductBarcode });
+        // Check if product barcode already exists for THIS user
+        const pre = await products.findOne({ ProductBarcode, userId: req.userId });
 
         if (pre) {
             return res.status(422).json({
-                message: "Product already exists"
+                message: "Product already exists for this user"
             });
         }
 
+        // Create product with userId
         const addProduct = new products({
             ProductName,
             ProductPrice,
-            ProductBarcode
+            ProductBarcode,
+            userId: req.userId  // Assign product to logged-in user
         });
 
         await addProduct.save();
@@ -40,11 +44,12 @@ router.post("/insertproduct", async (req, res) => {
 
 
 // ================= GET ALL PRODUCTS =================
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
 
     try {
 
-        const getProducts = await products.find({});
+        // Fetch only products belonging to the logged-in user
+        const getProducts = await products.find({ userId: req.userId });
 
         res.status(200).json(getProducts);
 
@@ -60,7 +65,7 @@ router.get('/', async (req, res) => {
 
 
 // ================= GET SINGLE PRODUCT =================
-router.get('/:id', async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res) => {
 
     try {
 
@@ -80,7 +85,7 @@ router.get('/:id', async (req, res) => {
 
 
 // ================= UPDATE PRODUCT =================
-router.put('/updateproduct/:id', async (req, res) => {
+router.put('/updateproduct/:id', authMiddleware, async (req, res) => {
 
     const { ProductName, ProductPrice, ProductBarcode } = req.body;
 
@@ -110,7 +115,7 @@ router.put('/updateproduct/:id', async (req, res) => {
 
 
 // ================= DELETE PRODUCT =================
-router.delete('/deleteproduct/:id', async (req, res) => {
+router.delete('/deleteproduct/:id', authMiddleware, async (req, res) => {
 
     try {
 
@@ -130,7 +135,7 @@ router.delete('/deleteproduct/:id', async (req, res) => {
 
 
 // ================= PATCH PRODUCT =================
-router.patch('/patchproduct/:id', async (req, res) => {
+router.patch('/patchproduct/:id', authMiddleware, async (req, res) => {
 
     try {
 
