@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 // Routes
 // ===============================
 app.use('/api/auth', require('./Routes/Auth'));        // Add authentication routes
-app.use('/api/products', require('./Routes/Products'));  // Existing product routes
+app.use('/api/products', require('./Routes/router'));  // Existing product routes
 
 
 // ===============================
