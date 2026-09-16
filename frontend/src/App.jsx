@@ -7,6 +7,8 @@ import Products from './components/Products';
 import InsertProduct from './components/InsertProduct';
 import UpdateProduct from './components/UpdateProduct';
 import About from './components/About';
+import Login from './components/Login';
+import Signup from './components/Signup';
 
 import {
   BrowserRouter as Router,
@@ -49,6 +51,10 @@ function App() {
       <Routes>
 
         <Route path="/" element={<Home />} />
+
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/signup" element={<Signup />} />
 
         <Route path="/products" element={<Products />} />
 

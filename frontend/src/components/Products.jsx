@@ -1,31 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { buildApiUrl } from "../config/api";
+import { getAuthToken, isUserLoggedIn } from "../services/authService";
 
 export default function Products() {
   const [productData, setProductData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user is logged in
+    if (!isUserLoggedIn()) {
+      navigate("/login");
+      return;
+    }
     getProducts();
-  }, []);
+  }, [navigate]);
 
   const getProducts = async () => {
     setLoading(true);
     setError("");
     try {
+      const token = getAuthToken();
+
       const res = await fetch(buildApiUrl("/api/products"), {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
 
       if (res.ok) {
         const data = await res.json();
         setProductData(data);
+      } else if (res.status === 401) {
+        setError("Session expired. Please login again.");
+        navigate("/login");
       } else {
         setError("Failed to load products");
       }
@@ -55,12 +68,15 @@ export default function Products() {
     }
 
     try {
+      const token = getAuthToken();
+
       const response = await fetch(
         buildApiUrl(`/api/products/deleteproduct/${id}`),
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           },
         }
       );
@@ -68,6 +84,9 @@ export default function Products() {
       if (response.ok) {
         alert("Product deleted successfully!");
         getProducts();
+      } else if (response.status === 401) {
+        alert("Session expired. Please login again.");
+        navigate("/login");
       } else {
         alert("Failed to delete product");
       }

@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { isUserLoggedIn, logoutUser } from '../services/authService';
 
 export default function Navbar({ title, theme, onToggleTheme }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(isUserLoggedIn());  // ← Change this
+  const navigate = useNavigate();
   const isDarkMode = theme === 'dark';
+
+  useEffect(() => {
+    // Check if user is logged in when component loads
+    setIsLoggedIn(isUserLoggedIn());
+    // Rest of useEffect...
+    window.addEventListener('storage', () => {
+      setIsLoggedIn(isUserLoggedIn());
+    });
+  }, []);
 
   const navLinks = [
     { to: '/', label: 'Home' },
@@ -11,6 +23,13 @@ export default function Navbar({ title, theme, onToggleTheme }) {
     { to: '/insertproduct', label: 'Add Product' },
     { to: '/about', label: 'About' },
   ];
+
+  const handleLogout = () => {
+    logoutUser();
+    setIsLoggedIn(false);
+    setIsOpen(false);
+    navigate('/login');
+  };
 
   return (
     <nav className="bg-blue-600 dark:bg-gray-950 text-white sticky top-0 z-50 shadow">
@@ -44,6 +63,41 @@ export default function Navbar({ title, theme, onToggleTheme }) {
               </NavLink>
 
             ))}
+
+            {/* Login/Signup or Logout Buttons */}
+            {!isLoggedIn ? (
+              <>
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'px-3 py-2 bg-green-600 rounded'
+                      : 'px-3 py-2 hover:bg-green-600 rounded'
+                  }
+                >
+                  Login
+                </NavLink>
+                <NavLink
+                  to="/signup"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'px-3 py-2 bg-green-600 rounded'
+                      : 'px-3 py-2 hover:bg-green-600 rounded'
+                  }
+                >
+                  Signup
+                </NavLink>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="px-3 py-2 rounded bg-red-600 hover:bg-red-700"
+              >
+                Logout
+              </button>
+            )}
+
             <button
               type="button"
               onClick={onToggleTheme}
@@ -88,6 +142,43 @@ export default function Navbar({ title, theme, onToggleTheme }) {
               </NavLink>
 
             ))}
+
+            {/* Mobile Login/Signup or Logout */}
+            {!isLoggedIn ? (
+              <>
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'block px-3 py-2 bg-green-600 rounded mt-2'
+                      : 'block px-3 py-2 hover:bg-green-600 rounded mt-2'
+                  }
+                  onClick={() => setIsOpen(false)}
+                >
+                  Login
+                </NavLink>
+                <NavLink
+                  to="/signup"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'block px-3 py-2 bg-green-600 rounded mt-2'
+                      : 'block px-3 py-2 hover:bg-green-600 rounded mt-2'
+                  }
+                  onClick={() => setIsOpen(false)}
+                >
+                  Signup
+                </NavLink>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full mt-2 px-3 py-2 rounded bg-red-600 hover:bg-red-700"
+              >
+                Logout
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => {

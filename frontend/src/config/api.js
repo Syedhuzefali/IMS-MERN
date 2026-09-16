@@ -1,4 +1,4 @@
-const fallbackApiBaseUrl = "http://localhost:3001";
+const fallbackApiBaseUrl = "https://ims-mern.onrender.com";
 
 const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || fallbackApiBaseUrl;
 
