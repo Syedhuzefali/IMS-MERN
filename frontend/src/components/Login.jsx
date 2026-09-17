@@ -82,10 +82,15 @@ function Login() {
           </button>
         </form>
 
-        <p className="signup-link">
-          Don't have an account?{' '}
-          <a href="/signup">Sign up here</a>
-        </p>
+        <div className="login-links">
+          <p className="signup-link">
+            Don't have an account?{' '}
+            <a href="/signup">Sign up here</a>
+          </p>
+          <p className="forgot-password-link">
+            <a href="/forgot-password">Forgot Password?</a>
+          </p>
+        </div>
       </div>
     </div>
   );

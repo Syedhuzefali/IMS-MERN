@@ -1,10 +1,12 @@
-const fallbackApiBaseUrl = "https://ims-mern.onrender.com";
+const fallbackApiBaseUrl = import.meta.env.DEV 
+  ? 'http://localhost:3001'  // ← Change 10000 to 3001
+  : 'https://ims-mern.onrender.com';
 
 const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || fallbackApiBaseUrl;
 
-export const API_BASE_URL = rawApiBaseUrl.replace(/\/$/, "");
+export const API_BASE_URL = rawApiBaseUrl.replace(/\/$/, '');
 
 export const buildApiUrl = (path) => {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   return `${API_BASE_URL}${normalizedPath}`;
 };
